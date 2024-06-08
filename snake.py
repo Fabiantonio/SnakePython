@@ -43,7 +43,15 @@ texto.color("white")
 texto.penup()
 texto.hideturtle()
 texto.goto(0,260)
-texto.write(f"Puntuación:0         Record: 0", align="center",font=("Courier",15,"normal"))
+texto.write(f"Puntuación: 0         Record: 0", align="center", font=("Courier", 20, "bold"))
+
+# Texto Game Over
+game_over_text = turtle.Turtle()
+game_over_text.speed(0)
+game_over_text.color("red")
+game_over_text.penup()
+game_over_text.hideturtle()
+game_over_text.goto(0, 0)
 
 #Funciones
 def Arriba():
@@ -55,19 +63,17 @@ def Derecha():
 def Izquierda():
 	cabeza.direction="left"
 
+# Función de movimiento
 def Movimiento():
-	if cabeza.direction=="up":
-		y=cabeza.ycor()
-		cabeza.sety(y+20)
-	if cabeza.direction=="down":
-		y=cabeza.ycor()
-		cabeza.sety(y-20)
-	if cabeza.direction=="right":
-		x=cabeza.xcor()
-		cabeza.setx(x+20)
-	if cabeza.direction=="left":
-		x=cabeza.xcor()
-		cabeza.setx(x-20)
+    if cabeza.direction == "up":
+        cabeza.sety(cabeza.ycor() + 20)
+    if cabeza.direction == "down":
+        cabeza.sety(cabeza.ycor() - 20)
+    if cabeza.direction == "right":
+        cabeza.setx(cabeza.xcor() + 20)
+    if cabeza.direction == "left":
+        cabeza.setx(cabeza.xcor() - 20)
+	
 
 #Teclado
 window.listen()
@@ -81,8 +87,10 @@ while True:
 	window.update()
 
 	#Colisiones bordes
-	if cabeza.xcor()>280 or cabeza.xcor()<-280 or cabeza.ycor()>280 or cabeza.ycor()<-280:
+	if cabeza.xcor()>280 or cabeza.xcor()<-280 or cabeza.ycor()>240 or cabeza.ycor()<-280:
+		game_over_text.write("GAME OVER", align="center", font=("Courier", 36, "bold"))
 		time.sleep(1)
+		game_over_text.clear()
 		cabeza.goto(0,0)
 		cabeza.direction="stop"
 
@@ -92,14 +100,14 @@ while True:
 		segmentos.clear()
 
 		#Resetear marcador
-		score=0
+		puntuacion = 0
 		texto.clear()
-		texto.write(f"Puntuación:0         Record: {record}", align="center",font=("Courier",15,"normal"))
+		texto.write(f"Puntuación: {puntuacion}         Record: {record}", align="center", font=("Courier", 20, "bold"))
 
 	#Colisiones de comida
 	if cabeza.distance(comida)<20:
-		y=random.randint(-200,280)
-		x=random.randint(-280,280)
+		y=random.randint(-280,280)
+		x=random.randint(-280,260)
 		comida.goto(x,y)
 
 		nuevo_segmento=turtle.Turtle()
@@ -109,12 +117,12 @@ while True:
 		nuevo_segmento.penup()
 		segmentos.append(nuevo_segmento)
 		#Aumentar marcador
-		puntuacion+=10
-		if puntuacion>record:
-			record=puntuacion
+		puntuacion += 10
+		if puntuacion > record:
+			record = puntuacion
 		texto.clear()
-		texto.write(f"Puntuación:{puntuacion}         Record: {record}", 
-						align="center",font=("Courier",15,"normal"))
+		texto.write(f"Puntuación: {puntuacion}         Record: {record}", align="center", font=("Courier", 20, "bold"))
+
 
 	#Mover el cuerpo de la serpiente
 	totalseg=len(segmentos)
@@ -132,19 +140,22 @@ while True:
 
 	#Colisiones con el cuerpo
 	for segmento in segmentos:
-		if segmento.distance(cabeza)<20:
+		if segmento.distance(cabeza) < 20:
+			game_over_text.write("GAME OVER", align="center", font=("Courier", 36, "bold"))
 			time.sleep(1)
+			game_over_text.clear()
 			cabeza.goto(0,0)
 			cabeza.direction="stop"
+
 			#Borrar segmentos
 			for segmento in segmentos:
 				segmento.goto(1000,1000)
 			segmentos.clear()
 			
-		#Borrar marcador	
-		score=0
-		texto.clear()
-		texto.write(f"Puntuación:0         Record: {record}", align="center",font=("Courier",15,"normal"))
+			#Borrar marcador	
+			puntuacion = 0
+			texto.clear()
+			texto.write(f"Puntuación: {puntuacion}         Record: {record}", align="center", font=("Courier", 20, "bold"))
 
 	time.sleep(posponer)
 
